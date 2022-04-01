@@ -1,0 +1,67 @@
+<%- include('./partials/header.ejs') %>
+
+    <link rel="stylesheet" href="/stylesheets/produtos.css">
+
+
+    <body>
+        <div class="pesquisa">
+            <h1>LISTAGEM DE USUÁRIOS</h1>
+            <form action="/usuarios/search" class="formulario" method="get">
+                <input type="text" placeholder="Pesquise um usuário" name="key">
+                <input type="submit" value="Buscar">
+                <input id="adicionar" type="submit" value="Adicionar">
+                <input id="resetar" type="reset" value="Limpar">
+            </form>
+        </div>
+
+        <div class="container-principal">
+
+            <table class="tabela">
+                <tr>
+                    <th>Nome</th>
+                    <th>Sobrenome</th>
+                    <th>Setor</th>
+                    <th>Ativo</th>
+                    <th>Perfil</th>
+                    <th>Email</th>
+                    <th>Ações</th>
+                </tr>
+                <% usuarios.forEach(usuario=> { %>
+                    <tr>
+                        <td>
+                            <%= usuario.nome %>
+                        </td>
+                        <td>
+                            <%= usuario.sobrenome %>
+                        </td>
+                        <td>
+                            <%= usuario.setor %>
+                        </td>
+                        <td>
+                            <%= usuario.ativo %>
+                        </td>
+                        <td>
+                            <%= usuario.perfil %>
+                        </td>
+                        <td>
+                            <%= usuario.email %>
+                        </td>
+                        <td>
+                            <a href="/usuarios/ver/<%= usuario.id %>" class="botao">Ver</a>
+                            <a href="/usuarios/editar/<%= usuario.id %>" class="botao">Editar</a>
+                            <a href="/usuarios/excluir/<%= usuario.id %>" class="botao">Excluir</a>
+                        </td>
+                    </tr>
+                    <% }) %>
+            </table>
+
+            <nav class="paginacao">
+                <ul> 
+                    <% for(let nrPagina = 1; nrPagina <= totalPagina; nrPagina++ ) { %>
+                        <li class="pageItem"><a href="?page=<%=nrPagina %>"> <%=nrPagina %></a></li>
+                        <% } %>
+                </ul>
+            </nav>
+        </div>
+        <script src="/js/jsUsuarios.js"></script>
+    </body>

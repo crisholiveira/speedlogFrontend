@@ -1,0 +1,45 @@
+<%- include('./partials/header.ejs') %>
+
+    <link rel="stylesheet" href="/stylesheets/produtos.css">
+
+
+    <body>
+        <div class="container-principal">
+            <h1>CADASTRAR USUÁRIO</h1>
+
+            <form action="/usuarios/cadastro" method="post">
+                <div class="form-group">
+                    <label for="nome">Nome</label>
+                    <input type="text" id="nome" name="nome">
+                </div>
+                <div class="form-group">
+                    <label for="sobrenome">Sobrenome</label>
+                    <input type="text" id="sobrenome" name="sobrenome">
+                </div>
+
+                <div class="form-group">
+                    <label for="setor">Setor</label>
+                    <input type="text" id="setor" name="setor">
+                </div>
+                <div class="form-group">
+                    <label for="ativo">Ativo</label>
+                    <input type="text" id="ativo" name="ativo">
+                </div>
+                <div class="form-group">
+                    <label for="perfil">Perfil</label>
+                    <input type="text" id="perfil" name="perfil">
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email">
+                </div>
+                <div class="form-group">
+                    <label for="senha">Senha</label>
+                    <input type="password" id="senha" name="senha">
+                </div>
+                <input type="submit" value="Cadastrar">
+
+            </form>
+
+        </div>
+    </body>

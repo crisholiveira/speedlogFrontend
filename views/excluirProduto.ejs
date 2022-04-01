@@ -1,0 +1,27 @@
+<%- include('./partials/header.ejs') %>
+
+    <link rel="stylesheet" href="/stylesheets/produtos.css">
+
+
+    <body>
+        <div class="container-principal">
+            <h1>EXCLUIR PRODUTO</h1>
+
+            <form action="/produtos/excluir/<%=produto.id%>?_method=PUT" method="post">
+                <div class="item">
+                    <ul>
+                        <li> Código: <%= produto.codigo %>
+                        </li>
+                        <li> Nome: <%= produto.nome %>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="btn-cancelar">
+                    <input id="resetar" type="reset" value="Cancelar">
+                    <input id="save" type="submit" value="Excluir">
+                </div>
+            </form>
+        </div>
+        <script src="/js/jsProdutos.js"></script>
+    </body>

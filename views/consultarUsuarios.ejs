@@ -1,0 +1,29 @@
+<%- include('./partials/header.ejs') %>
+
+    <link rel="stylesheet" href="/stylesheets/produtos.css">
+
+
+    <body>
+        <div class="container-principal">
+            <h1>DETALHES DO USUÁRIO</h1>
+            
+
+            <ul>
+
+                <li> Nome: <%= usuario.nome %>
+                </li>
+                <li> Sobrenome: <%= usuario.sobrenome %>
+                </li>
+                <li> Setor: <%= usuario.setor %>
+                </li>
+                <li>Ativo: <%= usuario.ativo %>
+                </li>
+                <li>Perfil: <%=usuario.perfil %>
+                </li>
+                <li>Email: <%= usuario.email %>
+                </li>
+
+            </ul>
+
+        </div>
+    </body>

@@ -1,0 +1,57 @@
+<%- include('./partials/header.ejs') %>
+
+    <link rel="stylesheet" href="/stylesheets/produtos.css">
+
+
+    <body>
+        <div class="pesquisa">
+            <h1>LISTAGEM DE PRODUTOS</h1>
+            <form action="/produtos/search" class="formulario" method="get">
+                <input type="text" placeholder="Pesquise um produto" name="key">
+                <input type="submit" value="Buscar">
+                <input id="adicionar" type="submit" value="Adicionar">
+                <input id="resetar" type="reset" value="Limpar">
+            </form>
+        </div>
+
+        <div class="container-principal">
+
+            <table class="tabela">
+                <tr>
+                    <th>Código</th>
+                    <th>Nome do produto</th>
+                    <th>Ações</th>
+                </tr>
+                <% produtos; produtos.forEach(produto=> { %>
+                
+                    <tr>
+                        <td>
+                            <%= produto.codigo %>
+                        </td>
+                        <td>
+                            <%= produto.nome %>
+                        </td>
+                        <td>
+                            <a href="/produtos/ver/<%= produto.id %>" class="botao">Ver</a>
+                            <a href="/produtos/editar/<%= produto.id %>" class="botao">Editar</a>
+                            <a href="/produtos/excluir/<%= produto.id %>" class="botao">Excluir</a>
+
+                           <!-- <a href="/produtos/excluir/<%= produto.id %>" class="botao">Excluir</a>-->
+                        </td>
+                    </tr>
+                    <% }) %>
+            </table>
+
+            <nav class="paginacao">
+                <ul>
+                    <% for(let nrPagina=1; nrPagina <=totalPagina; nrPagina++ ) { %>
+                        <li class="pageItem"><a href="?page=<%=nrPagina %>">
+                                <%=nrPagina %>
+                            </a></li>
+                        <% } %>
+                </ul>
+            </nav>
+        </div>
+        
+        <script src="/js/jsProdutos.js"></script>
+    </body>
