@@ -5,48 +5,59 @@ const Op = Sequelize.Op
 
 
 const produtosController = {
-    index: async (req, res) => {
+    index: (req, res) => {
        
         let totalPagina = 0
-        let produtos = []
+        let produtos = [];
 
         
         produtosRequest.getProdutos ()
-        .then( resposta => {
+        .then(resposta => {
             totalPagina = resposta.data.totalPagina
-            produtos = resposta.data.produtos
-           
-            
-
-        } )
+            produtos = resposta.data.produtos                       
+            return res.render('produtos', { produtos, totalPagina })
+        })
         .catch(err => {
             console.log(err.message + 'Erro ao consumir api de serviços')
+            return res.render('produtos', { produtos, totalPagina })
           })        
-       
-        return res.render('produtos', { produtos, totalPagina })
-
-    },
+},
 
 
-
-    create: (req, res) => {
+    /*create: (req, res) => {
 
         return res.render('cadastroProduto')
-    },
-    store: async (req, res) => {
-        const { codigo, nome } = req.body;
-        const inclusao = await Produto.create({
-            codigo,
-            nome
-        });
-        console.log(inclusao)
+    },*/
+    
+    store:  (req, res) => {
+       
+       produtosRequest.postProdutos(req.body)
+       .then(() => {
         return res.redirect('/produtos')
-
+       })      
+       .catch(err => {
+        console.log(err.message + 'Erro ao consumir api de serviços')
+        return res.render('produtos', { produtos, totalPagina })
+      })        
+        
     },
-    edit: async (req, res) => {
-        const { id } = req.params;
-        const produto = await Produto.findByPk(id);
-        return res.render('editarProdutos', { produto })
+    cadastro: (req,res)=> {
+
+        res.render('cadastroProduto')
+    },
+    edit:  (req, res) => {
+        produtosRequest.getProdutosId(req.params.id)
+        
+        .then((resultado) => {
+            console.log(resultado.data)
+            const produto = resultado.data.produtos[0]
+            return res.render('editarProdutos', { produto })
+           })      
+           .catch(err => {
+            console.log(err.message + 'Erro ao consumir api de serviços')
+            
+          })                  
+        
 
     },
     update: async (req, res) => {
