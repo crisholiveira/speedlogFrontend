@@ -41,87 +41,87 @@ const produtosController = {
       })        
         
     },
+
     cadastro: (req,res)=> {
 
         res.render('cadastroProduto')
     },
     edit:  (req, res) => {
-        produtosRequest.getProdutosId(req.params.id)
-        
-        .then((resultado) => {
-            console.log(resultado.data)
-            const produto = resultado.data.produtos[0]
+        let { id } = req.params;
+        produtosRequest.getProdutosId(id)
+        .then(({data:produto}) => {                                   
             return res.render('editarProdutos', { produto })
-           })      
-           .catch(err => {
+        })
+        .catch(err => {
             console.log(err.message + 'Erro ao consumir api de serviços')
-            
-          })                  
+            return res.redirect('/produtos')
+          })          
         
 
     },
     update: async (req, res) => {
         const { id } = req.params;
         const { codigo, nome } = req.body;
-        const produto = await Produto.update({
-            codigo,
-            nome
-        },
-            {
-                where: {
-                    id
-                }
 
-            })
-        console.log(produto)
+        produtosRequest.putProdutos(id, codigo, nome)
+       .then(() => {
         return res.redirect(`/produtos/ver/${id}`)
 
-        /*return res.redirect('/produtos')*/
-
+       })
+       .catch(err => {
+        console.log(err.message + 'Erro ao consumir api de serviços')
+        return res.redirect('/produtos')
+      })          
+       
+      
     },
 
-    consult: async (req, res) => {
-        const { id } = req.params;
-        const produto = await Produto.findByPk(id);
-        return res.render('excluirProduto', { produto })
-    },
-
+   
     destroy: async (req, res) => {
         const { id } = req.params;
-        const produto = await Produto.destroy({
-            where: { id }
-
+        produtosRequest.deleteProdutos(id)
+        .then(() => {
+            return res.redirect('/produtos')
         })
-        return res.redirect('/produtos')
+        .catch(err => {
+            console.log(err)
+            console.log(err.message + 'Erro ao consumir api de serviços')
+            return res.redirect('/produtos')
+          })                       
 
     },
 
-    findByCod: async (req, res) => {
+    findByCod: (view)=>{     
+
+   
+      return (req, res) => {
         let { id } = req.params;
-        let produto = await Produto.findOne({
-            where: {
-                id: id
-            }
+        produtosRequest.getProdutosId(id)
+        .then(({data: produto}) => {                            
+            return res.render(view, { produto })
         })
-        return res.render('consultarProdutos', { produto })
+        .catch(err => {
+            console.log(err.message + 'Erro ao consumir api de serviços')
+            return res.redirect('/produtos')
+          })          
+
+        }
+        
     },
     search: async (req, res) => {
         let { page = 1 } = req.query
         let { key } = req.query;
-        let { count: total, rows: produtos } = await Produto.findAndCountAll({
-            where: {
-                [Op.or]: {
-                    nome: { [Op.like]: `%${key}%` },
-                    codigo: { [Op.like]: `%${key}%` }
-                }
-            },
-            order: [[`nome`, `ASC`]],
-            limit: 10,
-            offset: (page - 1) * 10
+        produtosRequest.getProdutos (key)
+        .then(resposta => {
+            totalPagina = resposta.data.totalPagina
+            produtos = resposta.data.produtos                       
+            return res.render('produtos', { produtos, totalPagina })
         })
-        let totalPagina = Math.round(total / 10)
-        return res.render('produtos', { produtos, totalPagina })
-
+        .catch(err => {
+            console.log(err.message + 'Erro ao consumir api de serviços')
+            return res.render('produtos', { produtos, totalPagina })
+          })          
+        
     }
 }
 module.exports = produtosController

@@ -4,11 +4,13 @@ const defaults = require('./default')
 const url = 'produtos' // backend da rota app.js
 
 const produtosRequest = {
-    getProdutos: ( ) => axios({
+    getProdutos: (key) => axios({
         ...defaults,
         method: 'get',
-        url: `${url}/`
+        url: `${url}/`,
+        params: {filtro:key}
     }),
+
     getProdutosId: (id) => axios({
         ...defaults,
         method: 'get',
@@ -22,11 +24,18 @@ const produtosRequest = {
         url: `${url}/`,
         data: produto    
     }),
-    putProdutos: (produto) => axios({
+    putProdutos: (id, codigo, nome) => axios({
         ...defaults,
         method: 'put',
-        url: `${url}/`,
-        data: produto    
+        url: `${url}/${id}`,
+        data: {codigo, nome}
+    }),
+    
+    deleteProdutos: (id) => axios({
+        ...defaults,
+        method: 'delete',
+        url: `${url}/${id}`,
+         
     })
 };
 
