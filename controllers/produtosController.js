@@ -1,7 +1,5 @@
-const { Produto, sequelize } = require('../models')
-const Sequelize = require('sequelize')
 const produtosRequest = require('../requests/produtosRequests')
-const Op = Sequelize.Op
+
 
 
 const produtosController = {
@@ -23,11 +21,6 @@ const produtosController = {
           })        
 },
 
-
-    /*create: (req, res) => {
-
-        return res.render('cadastroProduto')
-    },*/
     
     store:  (req, res) => {
        

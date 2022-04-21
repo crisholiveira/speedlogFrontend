@@ -1,112 +1,124 @@
-const { Usuario, sequelize } = require('../models')
-const Sequelize = require('sequelize')
-const Op = Sequelize.Op
+const usuariosRequest = require('../requests/usuariosRequests')
+
 
 
 const usuariosController = {
-    index: async (req, res) => {
-        let { page = 1 } = req.query
-        let { count: total, rows: usuarios } = await Usuario.findAndCountAll({
-            limit: 10,
-            offset: (page - 1) * 10
+    index: (req, res) => {
+       
+        let totalPagina = 0
+        let usuarios = [];
 
+        
+        usuariosRequest.getUsuarios ()
+        .then(resposta => {
+            totalPagina = resposta.data.totalPagina
+            usuarios = resposta.data.usuarios                       
+            return res.render('usuarios', { usuarios, totalPagina })
         })
-        let totalPagina = Math.round(total / 10)
-        return res.render('usuarios', { usuarios, totalPagina })
+        .catch(err => {
+            console.log(err.message + 'Erro ao consumir api de serviços')
 
-    },
-    create: (req, res) => {
+            return res.render('usuarios', { usuarios, totalPagina })
+          })       
+          
+},
 
-        return res.render('cadastroUsuario')
-    },
-    store: async (req, res) => {
-        const { nome, sobrenome, setor, ativo, perfil, email } = req.body;
-        const inclusao = await Usuario.create({
-            nome,
-            sobrenome,
-            setor,
-            ativo,
-            perfil,
-            email
-        });
-        console.log(inclusao)
+    
+    store:  (req, res) => {
+       
+       usuariosRequest.postUsuarios(req.body)
+       .then(() => {
         return res.redirect('/usuarios')
-
+       })      
+       .catch(err => {
+        console.log(err.message + 'Erro ao consumir api de serviços')
+        return res.render('usuarios', { usuarios, totalPagina })
+      })        
+        
     },
-    edit: async (req, res) => {
-        const { id } = req.params;
-        const usuario = await Usuario.findByPk(id);
-        return res.render('editarUsuarios', { usuario })
+
+    cadastro: (req,res)=> {
+
+        res.render('cadastrousuario')
+    },
+    edit:  (req, res) => {
+        let { id } = req.params;
+        usuariosRequest.getUsuariosId(id)
+        .then(({data:usuario}) => {                                   
+            return res.render('editarusuarios', { usuario })
+        })
+        .catch(err => {
+            console.log(err.message + 'Erro ao consumir api de serviços')
+            return res.redirect('/usuarios')
+          })          
+        
 
     },
     update: async (req, res) => {
         const { id } = req.params;
-        const { nome, sobrenome, setor, ativo, perfil, email } = req.body;
-        const usuario = await Usuario.update({
-            nome,
-            sobrenome,
-            setor,
-            ativo,
-            perfil,
-            email
-        },
-            {
-                where: {
-                    id
-                }
+        const {nome, sobrenome, setor, ativo, perfil, email } = req.body;
 
-            })
-        console.log(usuario)
+        usuariosRequest.putUsuarios(id, nome, sobrenome, setor, ativo, perfil, email)
+       .then(() => {
         return res.redirect(`/usuarios/ver/${id}`)
 
-        /*return res.redirect('/produtos')*/
-
+       })
+       .catch(err => {
+        console.log(err.message + 'Erro ao consumir api de serviços')
+        return res.redirect('/usuarios')
+      })          
+       
+      
     },
 
-    consult: async (req, res) => {
-        const { id } = req.params;
-        const usuario = await Usuario.findByPk(id);
-        return res.render('excluirUsuario', { usuario })
-    },
-
+   
     destroy: async (req, res) => {
         const { id } = req.params;
-        const usuario = await Usuario.destroy({
-            where: { id }
-
+        usuariosRequest.deleteUsuarios(id)
+        .then(() => {
+            return res.redirect('/usuarios')
         })
-        return res.redirect('/usuarios')
+        .catch(err => {
+            console.log(err)
+            console.log(err.message + 'Erro ao consumir api de serviços')
+            return res.redirect('/usuarios')
+          })                       
 
     },
 
-    findByCod: async (req, res) => {
+    findByCod: (view)=>{     
+
+   
+      return (req, res) => {
         let { id } = req.params;
-        let usuario = await Usuario.findOne({
-            where: {
-                id: id
-            }
+        usuariosRequest.getUsuariosId(id)
+        .then(({data: usuario}) => {  
+            console.log(usuario)                         
+            return res.render(view, { usuario })
         })
-        return res.render('consultarUsuarios', { usuario })
+        .catch(err => {
+            console.log(err.message + 'Erro ao consumir api de serviços')
+            return res.redirect('/usuarios')
+          })          
+
+        }
+        
     },
     search: async (req, res) => {
         let { page = 1 } = req.query
         let { key } = req.query;
-        let { count: total, rows: usuarios } = await Usuario.findAndCountAll({
-            where: {
-                [Op.or]: {
-                    nome: { [Op.like]: `%${key}%` },
-                    sobrenome: { [Op.like]: `%${key}%` }
-                }
-            },
-            order: [[`nome`, `ASC`]],
-            limit: 10,
-            offset: (page - 1) * 10
+        usuariosRequest.getUsuarios (key)
+        .then(resposta => {
+            totalPagina = resposta.data.totalPagina
+            usuarios = resposta.data.usuarios                       
+            return res.render('usuarios', { usuarios, totalPagina })
         })
-        let totalPagina = Math.round(total / 10)
-        return res.render('usuarios', { usuarios, totalPagina })
-
+        .catch(err => {
+            console.log(err.message + 'Erro ao consumir api de serviços')
+            return res.render('usuarios', { usuarios, totalPagina })
+          })          
+        
     }
 }
 module.exports = usuariosController
-
 
